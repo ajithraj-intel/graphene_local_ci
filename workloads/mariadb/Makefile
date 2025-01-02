@@ -31,9 +31,9 @@ mysqld.manifest.sgx mysqld.sig: sgx_sign
 
 .INTERMEDIATE: sgx_sign
 sgx_sign: mysqld.manifest
-        gramine-sgx-sign \
-        --manifest $< \
-        --output $<.sgx
+	gramine-sgx-sign \
+	--manifest $< \
+	--output $<.sgx
 
 .PHONY: install-mariadb
 install-mariadb:
