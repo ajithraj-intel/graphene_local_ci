@@ -15,18 +15,6 @@ sgx_sign: mysqld.manifest
 	--manifest $< \
 	--output $<.sgx
 
-# Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
-# for details on this workaround see
-# https://github.com/gramineproject/gramine/blob/e8735ea06c/CI-Examples/helloworld/Makefile
-mysqld.manifest.sgx mysqld.sig: sgx_sign
-        @:
-
-.INTERMEDIATE: sgx_sign
-sgx_sign: mysqld.manifest
-	gramine-sgx-sign \
-	--manifest $< \
-	--output $<.sgx
-
 .PHONY: install-mariadb
 install-mariadb:
 	sudo apt update
