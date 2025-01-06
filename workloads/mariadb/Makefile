@@ -21,6 +21,7 @@ install-mariadb:
 	sudo apt install -y mariadb-server mariadb-client
 	sudo chmod -R 777 /var/run/mysqld
 	sudo chmod -R 777 /var/lib/mysql
+	sudo chown -R mysql:mysql /var/lib/mysql 
 
 .PHONY: remove-mariadb
 remove-mariadb:

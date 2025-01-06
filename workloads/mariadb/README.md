@@ -14,13 +14,17 @@ This guide provides comprehensive steps to install, configure, and optionally re
 ## Steps to Install MariaDB
 
 ```bash
+sudo systemctl stop mysql
 # Ensure the package list is up to date
 sudo apt update
+# Stop the service, if running
+sudo systemctl stop mysql
 # Install MariaDB  server and client packages:
 sudo apt install -y mariadb-server mariadb-client
 # Don't use in Production - ONLY FOR WORKLOAD TESTING
 sudo chmod -R 777 /var/run/mysqld
 sudo chmod -R 777 /var/lib/mysql
+sudo chown -R mysql:mysql /var/lib/mysql/
 
 ```
 
@@ -40,8 +44,8 @@ FLUSH PRIVILEGES;
 ## Steps to Completely Remove MariaDB
 
 ```bash
-# Stop the MariaDB Service - might fail if not already running
-sudo systemctl stop mariadb
+# Stop the MariaDB Service
+sudo systemctl stop mysql
 # Uninstall MariaDB Packages
 sudo apt remove --purge -y mariadb-server
 sudo apt remove --purge -y mariadb-client
