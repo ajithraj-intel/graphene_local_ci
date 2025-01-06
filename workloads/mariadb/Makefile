@@ -42,6 +42,8 @@ install-mariadb:
 	sudo chmod -R 777 /var/run/mysqld
 	sudo chmod -R 777 /var/lib/mysql
 	sudo chown -R mysql:mysql /var/lib/mysql 
+	sudo chown -R mysql:mysql /run/mysqld
+	sudo systemctl stop mysql
 
 .PHONY: remove-mariadb
 remove-mariadb:
