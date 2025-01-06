@@ -21,7 +21,8 @@ mysqld.manifest: mysqld.manifest.template
         -Darch_libdir=$(ARCH_LIBDIR) \
         -Duid=$(UID) \
         -Dgid=$(GID) \
-        $< >$@
+	-Dentrypoint=/usr/sbin/mysqld
+	$< >$@
 
 # Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
 # for details on this workaround see
@@ -50,3 +51,9 @@ remove-mariadb:
 	sudo apt remove --purge -y mariadb-client
 	sudo apt autoremove --purge -y
 	sudo rm -rf /etc/mysql /var/lib/mysql /var/log/mysql /var/log/mariadb /var/cache/mysql
+
+.PHONY: clean
+clean:
+	$(RM) *.sig *.manifest.sgx *.manifest
+	$(RM) -r /tmp/mysql-data
+
