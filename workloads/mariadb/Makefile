@@ -20,7 +20,7 @@ mysqld.manifest: mysqld.manifest.template
         -Darch_libdir=$(ARCH_LIBDIR) \
         -Duid=$(UID) \
         -Dgid=$(GID) \
-	-Dentrypoint=/usr/sbin/mysqld
+	-Dentrypoint=/usr/sbin/mysqld \
 	$< >$@
 
 # Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
