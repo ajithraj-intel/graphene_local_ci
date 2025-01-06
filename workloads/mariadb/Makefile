@@ -38,7 +38,7 @@ sgx_sign: mysqld.manifest
 .PHONY: install-mariadb
 install-mariadb:
 	sudo apt update
-	sudo apt install -y mariadb-server mariadb-client
+	sudo apt install -y mariadb-server
 	sudo chmod -R 777 /var/run/mysqld
 	sudo chmod -R 777 /var/lib/mysql
 	sudo chown -R mysql:mysql /var/lib/mysql 
