@@ -35,15 +35,12 @@ sgx_sign: mysqld.manifest
 	--manifest $< \
 	--output $<.sgx
 
+
+
 .PHONY: install-mariadb
 install-mariadb:
 	sudo apt update
 	sudo apt install -y mariadb-server
-	sudo chmod -R 777 /var/run/mysqld
-	sudo chmod -R 777 /var/lib/mysql
-	sudo chown -R mysql:mysql /var/lib/mysql 
-	sudo chown -R mysql:mysql /run/mysqld
-	sudo systemctl stop mysql
 
 .PHONY: remove-mariadb
 remove-mariadb:
@@ -57,4 +54,16 @@ remove-mariadb:
 clean:
 	$(RM) *.sig *.manifest.sgx *.manifest
 	$(RM) -r /tmp/mysql-data
+
+
+.PHONY: test-native
+test-native:
+	sudo chmod -R 755 /var/run/mysqld
+	sudo chmod -R 755 /var/lib/mysql
+	sudo chown -R mysql:mysql /var/lib/mysql
+	sudo chown -R mysql:mysql /run/mysqld
+	sudo systemctl stop mysql
+	sudo pkill -9 mysqld
+	mysqld --skip-grant-tables --bind-address=127.0.0.1 
+
 
