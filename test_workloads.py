@@ -19,12 +19,7 @@ ra_type = os.environ.get("RA_TYPE", "none")
 
 class Test_Workload_Results():
     @pytest.mark.examples
-    @pytest.mark.skipif((os_release_id not in ["ubuntu", "debian"]) or
-                    ((int(no_cores) < 16) and sgx_mode == '1'),
-                    reason="MySQL enabled only for above Ubuntu and debian Configurations.")
     def test_mysql_workload(self):
-        mysql_result = open("CI-Examples/mysql/RESULT", "r")
-        mysql_contents = mysql_result.read()
-        assert("Success 1/2" in mysql_contents)
-        assert("Success 2/2" in mysql_contents)
-        assert("error: " not in mysql_contents)
+        # Test Sequence - Spawn mariadb server in background, run mariadb client, print SUCCESS if successfully launched
+        # Check if the string "SUCCESS" is present in and client_output which generated after running the Makefile
+        assert "SUCCESS" in open("CI-Examples/mariadb/client_output", "r").read()

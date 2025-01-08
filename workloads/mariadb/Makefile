@@ -8,6 +8,12 @@ else
 GRAMINE_LOG_LEVEL = error
 endif
 
+ifeq ($(SGX),1)
+GRAMINE = gramine-sgx
+else
+GRAMINE = gramine-direct
+endif
+
 .PHONY: all
 all: mysqld.manifest
 ifeq ($(SGX),1)
@@ -39,7 +45,6 @@ sgx_sign: mysqld.manifest
 
 .PHONY: install-mariadb
 install-mariadb:
-	sudo apt update
 	sudo apt install -y mariadb-server
 
 .PHONY: remove-mariadb
@@ -52,18 +57,30 @@ remove-mariadb:
 
 .PHONY: clean
 clean:
-	$(RM) *.sig *.manifest.sgx *.manifest
+	$(RM) *.sig *.manifest.sgx *.manifest *_output
 	$(RM) -r /tmp/mysql-data
 
 
 .PHONY: test-native
 test-native:
-	sudo chmod -R 755 /var/run/mysqld
-	sudo chmod -R 755 /var/lib/mysql
+	sudo chmod -R 777 /var/run/mysqld
+	sudo chmod -R 777 /var/lib/mysql
 	sudo chown -R mysql:mysql /var/lib/mysql
 	sudo chown -R mysql:mysql /run/mysqld
-	sudo systemctl stop mysql
-	sudo pkill -9 mysqld
-	mysqld --skip-grant-tables --bind-address=127.0.0.1 
+	-sudo pkill -9 mysqld
+	mysqld --skip-grant-tables --bind-address=127.0.0.1 > server_output 2>&1 &
+	echo "Running MariaDB Server"
+	echo "Running MariaDB Client after 2 seconds"
+	sleep 2 && sudo mysql -h 127.0.0.1 --batch -N -e "SELECT 'SUCCESS';" > client_output
 
-
+.PHONY: test-gramine
+test-gramine:
+	sudo chmod -R 777 /var/run/mysqld
+	sudo chmod -R 777 /var/lib/mysql
+	sudo chown -R mysql:mysql /var/lib/mysql
+	sudo chown -R mysql:mysql /run/mysqld
+	-sudo pkill -9 mysqld
+	$(GRAMINE) mysqld --skip-grant-tables --bind-address=127.0.0.1 > server_output 2>&1 &
+	echo "Running MariaDB Server"
+	echo "Running MariaDB Client after 30 seconds"
+	sleep 30 && sudo mysql -h 127.0.0.1 --batch -N -e "SELECT 'SUCCESS';" > client_output
