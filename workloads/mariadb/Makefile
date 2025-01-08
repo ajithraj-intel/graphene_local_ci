@@ -49,7 +49,7 @@ install-mariadb:
 
 .PHONY: remove-mariadb
 remove-mariadb:
-	-sudo systemctl stop mariadb
+	-sudo pkill -9 mysqld
 	-sudo apt remove --purge -y mariadb-server
 	-sudo apt remove --purge -y mariadb-client
 	-sudo apt autoremove --purge -y
