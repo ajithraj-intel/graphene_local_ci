@@ -11,11 +11,9 @@ stage('test-examples') {
            try {
                   sh '''
                         cd CI-Examples/mariadb
-                        sudo -E make remove-mariadb
                         sudo -E make install-mariadb
                         make clean && make SGX=1
                         make test-gramine SGX=1 2>&1 | tee RESULT
-                        sudo -E make remove-mariadb
                     '''
             } catch (Exception e) { }
      }    
