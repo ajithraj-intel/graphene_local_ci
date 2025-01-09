@@ -15,6 +15,7 @@ stage('test-examples') {
                         sudo -E make install-mariadb
                         make clean && make SGX=1
                         make test-gramine SGX=1 2>&1 | tee RESULT
+                        sudo -E make remove-mariadb
                     '''
             } catch (Exception e) { }
      }    
