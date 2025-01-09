@@ -72,6 +72,7 @@ test-native:
 	echo "Running MariaDB Server"
 	echo "Running MariaDB Client after 2 seconds"
 	sleep 2 && sudo mysql -h 127.0.0.1 --batch -N -e "SELECT 'SUCCESS';" > client_output
+	-sudo pkill -9 mysqld
 
 .PHONY: test-gramine
 test-gramine:
@@ -84,3 +85,4 @@ test-gramine:
 	echo "Running MariaDB Server"
 	echo "Running MariaDB Client after 30 seconds"
 	sleep 30 && sudo mysql -h 127.0.0.1 --batch -N -e "SELECT 'SUCCESS';" > client_output
+	-sudo pkill -9 mysqld
