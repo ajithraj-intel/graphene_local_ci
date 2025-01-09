@@ -46,6 +46,8 @@ sgx_sign: mysqld.manifest
 .PHONY: install-mariadb
 install-mariadb:
 	sudo apt install -y mariadb-server
+	-sudo mkdir -p /var/run/mysqld
+	-sudo mkdir -p /var/lib/mysql
 
 .PHONY: remove-mariadb
 remove-mariadb:
