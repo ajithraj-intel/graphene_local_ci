@@ -53,7 +53,6 @@ install-mariadb:
 remove-mariadb:
 	-sudo pkill -9 mysqld
 	-sudo apt remove --purge -y mariadb-server
-	-sudo apt remove --purge -y mariadb-client
 	-sudo apt autoremove --purge -y
 	-sudo rm -rf /etc/mysql /var/lib/mysql /var/log/mysql /var/log/mariadb /var/cache/mysql
 
