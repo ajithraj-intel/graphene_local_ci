@@ -2,12 +2,25 @@ ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 UID ?= $(shell id -u)
 GID ?= $(shell id -g)
 
+# Detect the  Package Manager
+ifeq (, $(shell command -v apt-get))
+  ifeq (, $(shell command -v dnf))
+    $(error No supported package manager found)
+  else
+    PKG_MANAGER = dnf
+  endif
+else
+  PKG_MANAGER = apt-get
+endif
+
+# Set log level to DEBUG if DEBUG=1 is given in cmdline
 ifeq ($(DEBUG),1)
 GRAMINE_LOG_LEVEL = debug
 else
 GRAMINE_LOG_LEVEL = error
 endif
 
+# Toggle between sgx and direct, if SGX=1 is given in cmdline
 ifeq ($(SGX),1)
 GRAMINE = gramine-sgx
 else
@@ -41,11 +54,10 @@ sgx_sign: mysqld.manifest
 	--manifest $< \
 	--output $<.sgx
 
-
 .PHONY: install-mariadb
 install-mariadb:
-	-sudo apt update
-	sudo apt install -y mariadb-server
+	-sudo $(PKG_MANAGER) update
+	-sudo $(PKG_MANAGER) install -y mariadb-server
 	-sudo mkdir -p /var/run/mysqld
 	-sudo mkdir -p /var/lib/mysql
 
