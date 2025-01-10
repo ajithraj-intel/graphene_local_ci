@@ -56,7 +56,6 @@ sgx_sign: mysqld.manifest
 
 .PHONY: install-mariadb
 install-mariadb:
-	-sudo $(PKG_MANAGER) update
 	-sudo $(PKG_MANAGER) install -y mariadb-server
 	-sudo mkdir -p /var/run/mysqld
 	-sudo mkdir -p /var/lib/mysql
@@ -97,5 +96,5 @@ test-gramine:
 	$(GRAMINE) mysqld --skip-grant-tables --bind-address=127.0.0.1 > server_output 2>&1 &
 	echo "Running MariaDB Server"
 	echo "Running MariaDB Client after 30 seconds"
-	sleep 30 && sudo mysql -h 127.0.0.1 --batch -N -e "SELECT 'SUCCESS';" > client_output
+	sleep 60 && sudo mysql -h 127.0.0.1 --batch -N -e "SELECT 'SUCCESS';" > client_output_$(GRAMINE)
 	-sudo pkill -9 mysqld
