@@ -7,10 +7,14 @@ ifeq (, $(shell command -v apt-get))
   ifeq (, $(shell command -v dnf))
     $(error No supported package manager found)
   else
-    PKG_MANAGER = dnf
+    MARIADB_RUNTIME_FOLDER = /var/run/mariadb
+    MARIADB_LIB_FOLDER = /var/lib/mysql
+    PKG_MANAGER = dnf	
   endif
 else
   PKG_MANAGER = apt-get
+  MARIADB_LIB_FOLDER = /var/lib/mysql
+  MARIADB_RUNTIME_FOLDER = /var/run/mysqld
 endif
 
 # Set log level to DEBUG if DEBUG=1 is given in cmdline
@@ -75,10 +79,10 @@ clean:
 
 .PHONY: test-native
 test-native:
-	sudo chmod -R 777 /var/run/mysqld
-	sudo chmod -R 777 /var/lib/mysql
-	sudo chown -R mysql:mysql /var/lib/mysql
-	sudo chown -R mysql:mysql /run/mysqld
+	sudo chmod -R 777 $(MARIADB_RUNTIME_FOLDER)
+	sudo chmod -R 777 $(MARIADB_LIB_FOLDER)
+	sudo chown -R mysql:mysql $(MARIADB_LIB_FOLDER)
+	sudo chown -R mysql:mysql $(MARIADB_RUNTIME_FOLDER)
 	-sudo pkill -9 mysqld
 	mysqld --skip-grant-tables --bind-address=127.0.0.1 > server_output 2>&1 &
 	echo "Running MariaDB Server"
@@ -88,13 +92,17 @@ test-native:
 
 .PHONY: test-gramine
 test-gramine:
-	sudo chmod -R 777 /var/run/mysqld
-	sudo chmod -R 777 /var/lib/mysql
-	sudo chown -R mysql:mysql /var/lib/mysql
-	sudo chown -R mysql:mysql /run/mysqld
+	sudo chmod -R 777 $(MARIADB_RUNTIME_FOLDER)
+	sudo chmod -R 777 $(MARIADB_LIB_FOLDER)
+	sudo chown -R mysql:mysql $(MARIADB_LIB_FOLDER)
+	sudo chown -R mysql:mysql $(MARIADB_RUNTIME_FOLDER)
+
 	-sudo pkill -9 mysqld
+
 	$(GRAMINE) mysqld --skip-grant-tables --bind-address=127.0.0.1 > server_output 2>&1 &
 	echo "Running MariaDB Server"
+	
 	echo "Running MariaDB Client after 30 seconds"
 	sleep 60 && sudo mysql -h 127.0.0.1 --batch -N -e "SELECT 'SUCCESS';" > client_output_$(GRAMINE)
+
 	-sudo pkill -9 mysqld
