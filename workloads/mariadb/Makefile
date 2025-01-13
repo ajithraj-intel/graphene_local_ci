@@ -1,7 +1,7 @@
 ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
 UID ?= $(shell id -u)
 GID ?= $(shell id -g)
-TIMEOUT = 180
+TIMEOUT = 60
 
 # Detect the  Package Manager
 ifeq (, $(shell command -v apt-get))
@@ -102,8 +102,7 @@ test-gramine:
 
 	$(GRAMINE) mysqld --skip-grant-tables --bind-address=127.0.0.1 > server_output 2>&1 &
 	echo "Running MariaDB Server"
-	
-	echo "Running MariaDB Client after $(TIMEOUT) seconds"
 
-	sleep $(TIMEOUT) && sudo mysql -h 127.0.0.1 --batch -N -e "SELECT 'SUCCESS';" > client_output_$(GRAMINE) || cat server_output
+	echo "Running MariaDB Client after $(TIMEOUT) seconds"
+	sleep $(TIMEOUT) && cat server_output && sudo mysql -h 127.0.0.1 --batch -N -e "SELECT 'SUCCESS';" > client_output_$(GRAMINE)
 	-sudo pkill -9 mysqld
