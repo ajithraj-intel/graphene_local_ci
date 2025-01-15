@@ -9,12 +9,10 @@ stage('test-examples') {
 
     try {
             sh '''
-                #!/bin/bash
-                echo Running in $0 Terminal
                 echo "Running Test with GRAMINE-DIRECT"
                 cd CI-Examples/mariadb
                 sudo -E make install-mariadb
-                make clean && make SGX=1
+                make clean && make ${OPTS} 
                 make test-gramine SGX=0 2>&1 | tee RESULT
             '''
     } catch (Exception e) { }
