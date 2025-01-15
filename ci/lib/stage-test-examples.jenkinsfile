@@ -9,7 +9,7 @@ stage('test-examples') {
 
     try {
             sh '''
-                echo "Running Test with GRAMINE-DIRECT"
+                echo "Running Test with gramine-${mode}}"
                 cd CI-Examples/mariadb
                 sudo -E make install-mariadb
                 make clean && make ${MAKEOPTS} 
