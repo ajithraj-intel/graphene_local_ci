@@ -26,10 +26,10 @@ GRAMINE_LOG_LEVEL = error
 endif
 
 # Toggle between sgx and direct, if SGX=1 is given in cmdline
-ifeq ($(SGX),1)
-GRAMINE = gramine-sgx
-else
+ifeq ($(SGX),)
 GRAMINE = gramine-direct
+else
+GRAMINE = gramine-sgx
 endif
 
 .PHONY: all
