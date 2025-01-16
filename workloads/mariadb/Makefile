@@ -104,5 +104,5 @@ test-gramine:
 	echo "Running MariaDB Server"
 
 	echo "Running MariaDB Client after $(TIMEOUT) seconds"
-	sleep $(TIMEOUT) && cat server_output && sudo mysql -h 127.0.0.1 --batch -N -e "SELECT 'SUCCESS';" > client_output_$(GRAMINE)
+	sleep $(TIMEOUT) && cat server_output && sudo mysql -h 127.0.0.1 --batch -N -e "SELECT 'SUCCESS';" > client_output
 	-sudo pkill -9 mysqld
