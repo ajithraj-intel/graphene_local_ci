@@ -1,22 +1,8 @@
-#!/bin/sh
-# Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
-set -ex
+#!/bin/sh -eux
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (c) 2018-2024 Petr Vorel <pvorel@suse.cz>
 
-apt="apt remove -y"
+ACTION="remove-nonessential" $(dirname $0)/debian.sh
 
-$apt \
-	asciidoc \
-	asciidoctor \
-	libacl1-dev \
-	libaio-dev \
-	libaio1 \
-	libcap-dev \
-	libcap2 \
-	libkeyutils-dev \
-	libnuma-dev \
-	libnuma1 \
-	libselinux1-dev \
-	libsepol-dev \
-	libssl-dev
-
-$apt asciidoc-base ruby-asciidoctor || true
+# GSGX-4932: Added -u flag in the shebang
+# GSGX-4932: The removal of packages is now automated instead of manual

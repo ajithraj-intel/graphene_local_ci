@@ -131,12 +131,16 @@ if [ -e /proc/modules ]; then
 fi
 
 echo
+echo 'cpuinfo:'
+tst_cmd_run lscpu || cat /proc/cpuinfo
+
+echo
 echo 'free reports:'
 free
 
 echo
-echo 'cpuinfo:'
-tst_cmd_run lscpu || cat /proc/cpuinfo
+echo 'memory (/proc/meminfo):'
+cat /proc/meminfo
 
 echo
 echo 'available filesystems:'
@@ -154,6 +158,9 @@ else
 	df
 fi
 
+echo
+echo 'tainted (/proc/sys/kernel/tainted):'
+cat /proc/sys/kernel/tainted
 
 echo
 if is_enabled /sys/module/apparmor/parameters/enabled; then

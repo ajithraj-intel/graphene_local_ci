@@ -68,9 +68,19 @@
 #################################################################################
 
 
+deprecated()
+{
+    echo "-------------------------------------------" >&2
+    echo "INFO: runltp script is deprecated, try kirk" >&2
+    echo "https://github.com/linux-test-project/kirk" >&2
+    echo "-------------------------------------------" >&2
+}
+
 
 setup()
 {
+    deprecated
+
     cd `dirname $0` || \
     {
         echo "FATAL: unable to change directory to $(dirname $0)"
@@ -629,19 +639,6 @@ EOF
         }
     }
 
-    # The fsx-linux tests use the SCRATCHDEV environment variable as a location
-    # that can be reformatted and run on.  Set SCRATCHDEV if you want to run
-    # these tests.  As a safeguard, this is disabled.
-    unset SCRATCHDEV
-    [ -n "$SCRATCHDEV" ] && \
-    {
-         cat ${LTPROOT}/runtest/fsx >> ${TMP}/alltests ||
-         {
-             echo "FATAL: unable to create  fsx-linux tests command file"
-             exit 1
-         }
-    }
-
     # If enabled, execute only test cases that match the PATTERN
     if [ -n "$TAG_RESTRICT_STRING" ]
     then
@@ -934,6 +931,9 @@ EOF
 
 	EOF
     }
+
+    deprecated
+
     exit $VALUE
 }
 
