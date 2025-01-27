@@ -35,11 +35,11 @@ void setup(void)
 {
 	struct passwd *ltpuser;
 
-	SAFE_CREAT(TEST_FILE2, 0644);
+	SAFE_TOUCH(TEST_FILE2, 0644, NULL);
 
 	ltpuser = SAFE_GETPWNAM("nobody");
 
-	SAFE_SETUID(ltpuser->pw_uid);
+	SAFE_SETEUID(ltpuser->pw_uid);
 }
 
 static void verify_open(unsigned int n)
@@ -52,7 +52,7 @@ static void verify_open(unsigned int n)
 
 void cleanup(void)
 {
-	SAFE_SETUID(0);
+	SAFE_SETEUID(0);
 }
 
 static struct tst_test test = {

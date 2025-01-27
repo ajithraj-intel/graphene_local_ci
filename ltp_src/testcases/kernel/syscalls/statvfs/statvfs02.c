@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-2.0
+// SPDX-License-Identifier: GPL-2.0-only
 
 /*
  * Copyright (c) 2014 Fujitsu Ltd.
@@ -44,11 +44,11 @@ static void setup(void)
 {
 	unsigned int i;
 
-	// SAFE_SYMLINK(TEST_SYMLINK, "symlink_2");
-	// SAFE_SYMLINK("symlink_2", TEST_SYMLINK);
+	SAFE_SYMLINK(TEST_SYMLINK, "symlink_2");
+	SAFE_SYMLINK("symlink_2", TEST_SYMLINK);
 
 	memset(nametoolong, 'a', PATH_MAX+1);
-	SAFE_CREAT(TEST_FILE, 0644);
+	SAFE_TOUCH(TEST_FILE, 0644, NULL);
 
 	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
 		if (tcases[i].path == (char *)-1)

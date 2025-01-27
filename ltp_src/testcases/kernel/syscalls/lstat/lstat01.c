@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-2.0
+// SPDX-License-Identifier: GPL-2.0-only
 /*
  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
  *  Authors:	William Roske, Dave Fenner
@@ -53,9 +53,8 @@ static void setup(void)
 	user_id  = getuid();
 	group_id = getgid();
 
-	// SAFE_TOUCH(TESTFILE, 0644, NULL);
-	SAFE_CREAT(TESTFILE, 0644);
-	// SAFE_SYMLINK(TESTFILE, TESTSYML);
+	SAFE_TOUCH(TESTFILE, 0644, NULL);
+	SAFE_SYMLINK(TESTFILE, TESTSYML);
 }
 
 static void cleanup(void)

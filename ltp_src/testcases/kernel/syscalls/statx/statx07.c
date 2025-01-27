@@ -39,6 +39,7 @@
 #include <sys/mount.h>
 #include "tst_test.h"
 #include "lapi/stat.h"
+#include "lapi/fcntl.h"
 
 #define MODE(X) (X & (~S_IFMT))
 #define FLAG_NAME(x) .flag = x, .flag_name = #x
@@ -53,7 +54,6 @@
 #define SERV_FORCE_SYNC "server/force_sync_file"
 #define SERV_DONT_SYNC "server/dont_sync_file"
 
-static char *cwd;
 static char cmd[BUFF_SIZE];
 static int mounted;
 static int exported;
@@ -62,15 +62,15 @@ static int get_mode(char *file_name, int flag_type, char *flag_name)
 {
 	struct statx buf;
 
-	TEST(statx(AT_FDCWD, file_name, flag_type, STATX_ALL, &buf));
+	TEST(statx(AT_FDCWD, file_name, flag_type, STATX_BASIC_STATS, &buf));
 
 	if (TST_RET == -1) {
 		tst_brk(TFAIL | TST_ERR,
-			"statx(AT_FDCWD, %s, %s, STATX_ALL, &buf)",
+			"statx(AT_FDCWD, %s, %s, STATX_BASIC_STATS, &buf)",
 			file_name, flag_name);
 	}
 
-	tst_res(TINFO, "statx(AT_FDCWD, %s, %s, STATX_ALL, &buf) = %o",
+	tst_res(TINFO, "statx(AT_FDCWD, %s, %s, STATX_BASIC_STATS, &buf) = %o",
 		file_name, flag_name, buf.stx_mode);
 
 	return buf.stx_mode;
@@ -115,14 +115,16 @@ static void setup(void)
 	int ret;
 	char server_path[BUFF_SIZE];
 
-	cwd = tst_get_tmpdir();
+	mode_t old_umask = umask(0);
 
 	SAFE_MKDIR(SERV_PATH, DEFAULT_MODE);
 	SAFE_MKDIR(CLI_PATH, DEFAULT_MODE);
 	SAFE_CREAT(SERV_FORCE_SYNC, DEFAULT_MODE);
 	SAFE_CREAT(SERV_DONT_SYNC, DEFAULT_MODE);
 
-	snprintf(server_path, sizeof(server_path), ":%s/%s", cwd, SERV_PATH);
+	umask(old_umask);
+
+	snprintf(server_path, sizeof(server_path), ":%s/%s", tst_tmpdir_path(), SERV_PATH);
 
 	snprintf(cmd, sizeof(cmd),
 		 "exportfs -i -o no_root_squash,rw,sync,no_subtree_check,fsid=%d *%.1024s",
@@ -150,7 +152,7 @@ static void cleanup(void)
 	if (!exported)
 		return;
 	snprintf(cmd, sizeof(cmd),
-		 "exportfs -u *:%s/%s", cwd, SERV_PATH);
+		 "exportfs -u *:%s/%s", tst_tmpdir_path(), SERV_PATH);
 
 	if (tst_system(cmd) == -1)
 		tst_res(TWARN | TST_ERR, "failed to clear exportfs");
@@ -163,7 +165,10 @@ static struct tst_test test = {
 	.cleanup = cleanup,
 	.min_kver = "4.16",
 	.needs_tmpdir = 1,
-	.dev_fs_type = "nfs",
+	.filesystems = (struct tst_fs []) {
+		{.type = "nfs"},
+		{}
+	},
 	.needs_root = 1,
 	.needs_cmds = (const char *[]) {
 		"exportfs",

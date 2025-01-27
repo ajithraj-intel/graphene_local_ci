@@ -31,7 +31,6 @@
 #include <signal.h>
 #include "test.h"
 #include "safe_macros.h"
-#include "fchownat.h"
 #include "lapi/fcntl.h"
 
 #define TESTFILE	"testfile"
@@ -81,8 +80,7 @@ static void setup(void)
 
 	dir_fd = SAFE_OPEN(cleanup, "./", O_DIRECTORY);
 
-	// SAFE_TOUCH(cleanup, TESTFILE, 0600, NULL);
-	SAFE_CREAT(cleanup, TESTFILE, 0600);
+	SAFE_TOUCH(cleanup, TESTFILE, 0600, NULL);
 
 	SAFE_SYMLINK(cleanup, TESTFILE, TESTFILE_LINK);
 

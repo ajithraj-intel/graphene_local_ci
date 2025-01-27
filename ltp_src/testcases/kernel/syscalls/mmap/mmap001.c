@@ -45,7 +45,7 @@ static void cleanup(void)
 
 static void setup(void)
 {
-	char buf[1024] = "/tmp/mmap001_testfile";
+	char buf[1024];
 	/*
 	 * setup a default signal hander and a
 	 * temporary working directory.
@@ -54,9 +54,9 @@ static void setup(void)
 
 	TEST_PAUSE;
 
-	// tst_tmpdir();
+	tst_tmpdir();
 
-	// snprintf(buf, 1024, "testfile.%d", getpid());
+	snprintf(buf, 1024, "testfile.%d", getpid());
 
 	if ((filename = strdup(buf)) == NULL) {
 		tst_brkm(TBROK | TERRNO, cleanup, "strdup failed");
@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
 				 "writing to %s failed", filename);
 		}
 
-		array = mmap(0, memsize, PROT_WRITE, MAP_PRIVATE, fd, 0);
+		array = mmap(0, memsize, PROT_WRITE, MAP_SHARED, fd, 0);
 		if (array == MAP_FAILED) {
 			TEST_ERRNO = errno;
 			close(fd);

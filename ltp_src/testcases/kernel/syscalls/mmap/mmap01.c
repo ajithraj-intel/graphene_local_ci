@@ -81,7 +81,7 @@ int main(int ac, char **av)
 		 */
 		errno = 0;
 		addr = mmap(NULL, page_sz, PROT_READ | PROT_WRITE,
-			    MAP_FILE | MAP_PRIVATE, fildes, 0);
+			    MAP_FILE | MAP_SHARED, fildes, 0);
 
 		/* Check for the return value of mmap() */
 		if (addr == MAP_FAILED) {
@@ -150,7 +150,7 @@ static void setup(void)
 
 	TEST_PAUSE;
 
-	// tst_tmpdir();
+	tst_tmpdir();
 
 	/* Get the path of temporary file to be created */
 	if (getcwd(Path_name, sizeof(Path_name)) == NULL) {

@@ -27,6 +27,7 @@
 #include "tst_test.h"
 #include "lapi/fs.h"
 #include "lapi/stat.h"
+#include "lapi/fcntl.h"
 
 #define MNTPOINT "mnt_point"
 #define TESTDIR_FLAGGED MNTPOINT"/test_dir1"
@@ -120,7 +121,10 @@ static struct tst_test test = {
 	.needs_root = 1,
 	.needs_device = 1,
 	.mntpoint = MNTPOINT,
-	.dev_fs_type = "ext4",
+	.filesystems = (struct tst_fs []) {
+		{.type = "ext4"},
+		{}
+	},
 	.needs_cmds = (const char *[]) {
 		"mkfs.ext4 >= 1.43.0",
 		"e4crypt",

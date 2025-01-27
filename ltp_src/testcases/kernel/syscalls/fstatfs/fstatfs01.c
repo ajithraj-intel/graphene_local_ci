@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-2.0
+// SPDX-License-Identifier: GPL-2.0-only
 /*
  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
  * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
@@ -15,8 +15,8 @@
 #include <stdio.h>
 #include "tst_test.h"
 
-// #define MNT_POINT "mntpoint"
-#define TEMP_FILE "/tmp/fstatfs01_testfile"
+#define MNT_POINT "mntpoint"
+#define TEMP_FILE MNT_POINT"/test_file"
 
 static int file_fd;
 static int pipe_fd;
@@ -60,8 +60,8 @@ static struct tst_test test = {
 	.cleanup = cleanup,
 	.tcnt = ARRAY_SIZE(tcases),
 	.test = run,
-	// .mount_device = 1,
-	// .mntpoint = MNT_POINT,
-	// .all_filesystems = 1,
+	.mount_device = 1,
+	.mntpoint = MNT_POINT,
+	.all_filesystems = 1,
 	.needs_root = 1
 };

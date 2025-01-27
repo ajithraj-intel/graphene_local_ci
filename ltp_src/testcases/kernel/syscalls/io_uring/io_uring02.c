@@ -64,13 +64,12 @@ static struct msghdr beef_header = {
 
 static void setup(void)
 {
-	char *tmpdir = tst_get_tmpdir();
+	char *tmpdir = tst_tmpdir_path();
 	int ret;
 
 	addr.sun_family = AF_UNIX;
 	ret = snprintf(addr.sun_path, sizeof(addr.sun_path), "%s/%s", tmpdir,
 		SOCK_NAME);
-	free(tmpdir);
 
 	if (ret >= (int)sizeof(addr.sun_path))
 		tst_brk(TBROK, "Tempdir path is too long");
@@ -253,6 +252,11 @@ static struct tst_test test = {
 	.needs_tmpdir = 1,
 	.caps = (struct tst_cap []) {
 		TST_CAP(TST_CAP_REQ, CAP_SYS_CHROOT),
+		{}
+	},
+	.save_restore = (const struct tst_path_val[]) {
+		{"/proc/sys/kernel/io_uring_disabled", "0",
+			TST_SR_SKIP_MISSING | TST_SR_TCONF_RO},
 		{}
 	},
 	.tags = (const struct tst_tag[]) {

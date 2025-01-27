@@ -16,10 +16,10 @@
 #include "tst_test.h"
 #include "tst_safe_pthread.h"
 
-// #define MNTPOINT	"mntpoint"
+#define MNTPOINT	"mntpoint"
 #define MODE_RWX	07770
-#define DIR_NAME	"/tmp/X.%d"
-#define DIR_NAME_GROUP	"/tmp/X.%d.%d"
+#define DIR_NAME	MNTPOINT "/X.%d"
+#define DIR_NAME_GROUP	MNTPOINT "/X.%d.%d"
 #define NCHILD		3
 
 static int child_groups = 2;
@@ -139,7 +139,7 @@ static struct tst_test test = {
 	.test_all = verify_mkdir,
 	.needs_root = 1,
 	.setup = setup,
-	// .mount_device = 1,
-	// .mntpoint = MNTPOINT,
-	// .all_filesystems = 1,
+	.mount_device = 1,
+	.mntpoint = MNTPOINT,
+	.all_filesystems = 1,
 };

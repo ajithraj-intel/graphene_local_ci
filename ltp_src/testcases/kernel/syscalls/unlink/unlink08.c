@@ -61,11 +61,11 @@ static void do_unlink(unsigned int n)
 static void setup(void)
 {
 	SAFE_MKDIR("unwrite_dir", 0777);
-	SAFE_CREAT("unwrite_dir/file", 0777);
+	SAFE_TOUCH("unwrite_dir/file", 0777, NULL);
 	SAFE_CHMOD("unwrite_dir", 0555);
 
 	SAFE_MKDIR("unsearch_dir", 0777);
-	SAFE_CREAT("unsearch_dir/file", 0777);
+	SAFE_TOUCH("unsearch_dir/file", 0777, NULL);
 	SAFE_CHMOD("unsearch_dir", 0666);
 
 	SAFE_MKDIR("regdir", 0777);

@@ -8,7 +8,9 @@
  *  04/2008 Roy Lee <roylee@andestech.com>
  */
 
-/*
+/*\
+ * [Description]
+ *
  * Attempt to execve(2) a file which is being opened by another process for
  * writing fails with ETXTBSY.
  */
@@ -63,7 +65,17 @@ static void do_child(void)
 	exit(0);
 }
 
+static void setup(void)
+{
+	if ((tst_kvercmp(6, 11, 0)) >= 0) {
+		tst_brk(TCONF, "Skipping test, write to executed file is "
+			"allowed since 6.11-rc1.\n"
+			"2a010c412853 (\"fs: don't block i_writecount during exec\")");
+	}
+}
+
 static struct tst_test test = {
+	.setup = setup,
 	.test_all = verify_execve,
 	.forks_child = 1,
 	.child_needs_reinit = 1,

@@ -62,9 +62,9 @@ static void setup(void)
 	struct passwd *ltpuser;
 
 	ltpuser = SAFE_GETPWNAM(nobody_uid);
-	SAFE_SETUID(ltpuser->pw_uid);
+	SAFE_SETEUID(ltpuser->pw_uid);
 
-	SAFE_CREAT(TESTFILE, FILE_MODE);
+	SAFE_TOUCH(TESTFILE, FILE_MODE, NULL);
 	SAFE_MKDIR(TESTDIR, DIR_MODE);
 }
 

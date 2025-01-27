@@ -85,8 +85,8 @@ static void setup(void)
 			tests[i].path = tst_get_bad_addr(NULL);
 	}
 
-	// SAFE_SYMLINK(TEST_SYMLINK, "statfs_symlink_2");
-	// SAFE_SYMLINK("statfs_symlink_2", TEST_SYMLINK);
+	SAFE_SYMLINK(TEST_SYMLINK, "statfs_symlink_2");
+	SAFE_SYMLINK("statfs_symlink_2", TEST_SYMLINK);
 }
 
 static void cleanup(void)

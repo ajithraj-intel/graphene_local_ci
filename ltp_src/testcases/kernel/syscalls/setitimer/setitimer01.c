@@ -20,9 +20,10 @@
 #include "tst_test.h"
 #include "lapi/syscalls.h"
 #include "tst_safe_clocks.h"
+#include "tst_timer.h"
 
 static struct timeval tv;
-static struct itimerval *value, *ovalue;
+static struct __kernel_old_itimerval *value, *ovalue;
 static volatile unsigned long sigcnt;
 static long time_step;
 static long time_sec;
@@ -34,14 +35,9 @@ static struct tcase {
 	int signo;
 } tcases[] = {
 	{ITIMER_REAL,    "ITIMER_REAL",    SIGALRM},
-	// {ITIMER_VIRTUAL, "ITIMER_VIRTUAL", SIGVTALRM},
-	// {ITIMER_PROF,    "ITIMER_PROF",    SIGPROF},
+	{ITIMER_VIRTUAL, "ITIMER_VIRTUAL", SIGVTALRM},
+	{ITIMER_PROF,    "ITIMER_PROF",    SIGPROF},
 };
-
-static int sys_setitimer(int which, void *new_value, void *old_value)
-{
-	return tst_syscall(__NR_setitimer, which, new_value, old_value);
-}
 
 static void sig_routine(int signo LTP_ATTRIBUTE_UNUSED)
 {
@@ -72,9 +68,9 @@ static void verify_setitimer(unsigned int i)
 			tst_res(TINFO, "Test begin time: %ld.%lds", tv.tv_sec, tv.tv_usec);
 	}
 
-	// pid = SAFE_FORK();
+	pid = SAFE_FORK();
 
-	// if (pid == 0) {
+	if (pid == 0) {
 		tst_no_corefile(0);
 
 		set_setitimer_value(time_sec, time_usec);
@@ -113,21 +109,21 @@ static void verify_setitimer(unsigned int i)
 		set_setitimer_value(0, time_usec);
 		TST_EXP_PASS(sys_setitimer(tc->which, value, NULL));
 
-	// 	while (sigcnt <= 10UL)
-	// 		;
+		while (sigcnt <= 10UL)
+			;
 
-	// 	SAFE_SIGNAL(tc->signo, SIG_DFL);
+		SAFE_SIGNAL(tc->signo, SIG_DFL);
 
-	// 	while (1)
-	// 		;
-	// }
+		while (1)
+			;
+	}
 
-	// SAFE_WAITPID(pid, &status, 0);
+	SAFE_WAITPID(pid, &status, 0);
 
-	// if (WIFSIGNALED(status) && WTERMSIG(status) == tc->signo)
-	// 	tst_res(TPASS, "Child received signal: %s", tst_strsig(tc->signo));
-	// else
-	// 	tst_res(TFAIL, "Child: %s", tst_strstatus(status));
+	if (WIFSIGNALED(status) && WTERMSIG(status) == tc->signo)
+		tst_res(TPASS, "Child received signal: %s", tst_strsig(tc->signo));
+	else
+		tst_res(TFAIL, "Child: %s", tst_strstatus(status));
 
 	if (tc->which == ITIMER_REAL) {
 		if (gettimeofday(&tv, NULL) == -1)
