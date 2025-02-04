@@ -70,6 +70,10 @@
 
 #include "test.h"
 
+/*
+ * Don't forget to remove USE_LEGACY_COMPAT_16_H from Makefile after
+ * rewriting this test to the new API.
+ */
 #include "compat_16.h"
 
 TCID_DEFINE(setgroups04);
@@ -79,8 +83,6 @@ GID_T groups_list[NGROUPS];
 
 void setup();			/* setup function for the test */
 void cleanup();			/* cleanup function for the test */
-
-#if !defined(UCLINUX)
 
 int main(int ac, char **av)
 {
@@ -130,16 +132,6 @@ int main(int ac, char **av)
 	tst_exit();
 
 }
-
-#else
-
-int main(void)
-{
-	tst_resm(TINFO, "test is not available on uClinux");
-	tst_exit();
-}
-
-#endif /* if !defined(UCLINUX) */
 
 /*
  * setup()

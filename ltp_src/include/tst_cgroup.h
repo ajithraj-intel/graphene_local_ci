@@ -104,6 +104,7 @@ struct tst_cg_opts {
 	 * directory as opposed to the default pid of the calling process.
 	 */
 	int test_pid;
+	int needs_nsdelegate;
 };
 
 /* A Control Group in LTP's aggregated hierarchy */
@@ -155,6 +156,10 @@ tst_cg_group_mk(const struct tst_cg_group *const parent,
 
 const char *
 tst_cg_group_name(const struct tst_cg_group *const cg)
+		      __attribute__ ((nonnull, warn_unused_result));
+
+/* This call returns a fd pointing to a v2 directory */
+int tst_cg_group_unified_dir_fd(const struct tst_cg_group *const cg)
 		      __attribute__ ((nonnull, warn_unused_result));
 
 /* Remove a descendant CGroup */

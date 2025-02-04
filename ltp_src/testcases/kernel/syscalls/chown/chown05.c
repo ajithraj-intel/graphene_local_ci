@@ -51,7 +51,7 @@ static void run(unsigned int i)
 
 static void setup(void)
 {
-	SAFE_CREAT(TESTFILE, FILE_MODE);
+	SAFE_TOUCH(TESTFILE, FILE_MODE, NULL);
 }
 
 static struct tst_test test = {

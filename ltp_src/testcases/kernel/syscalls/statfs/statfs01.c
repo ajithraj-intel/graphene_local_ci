@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-2.0
+// SPDX-License-Identifier: GPL-2.0-only
 /*
  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
  * AUTHOR : William Roske, CO-PILOT	: Dave Fenner
@@ -14,8 +14,8 @@
 
 #include "tst_test.h"
 
-// #define MNT_POINT "mntpoint"
-#define TEMP_FILE "/tmp/statfs01_testfile"
+#define MNT_POINT "mntpoint"
+#define TEMP_FILE MNT_POINT"/testfile"
 #define TEXT "dummy text"
 
 static void setup(void)
@@ -37,7 +37,7 @@ static struct tst_test test = {
 	.setup = setup,
 	.test_all = run,
 	.needs_root = 1,
-	// .mount_device = 1,
-	// .mntpoint = MNT_POINT,
-	// .all_filesystems = 1
+	.mount_device = 1,
+	.mntpoint = MNT_POINT,
+	.all_filesystems = 1
 };

@@ -117,7 +117,10 @@ static void child_fn2(int cpid1, int parentuid, int parentgid)
 
 static void run(void)
 {
-	const struct tst_clone_args args = { CLONE_NEWUSER, SIGCHLD };
+	const struct tst_clone_args args = {
+		.flags = CLONE_NEWUSER,
+		.exit_signal = SIGCHLD,
+	};
 	pid_t cpid1, cpid2;
 	uid_t parentuid;
 	gid_t parentgid;
@@ -156,7 +159,7 @@ static void run(void)
 		tst_res(TINFO, "Check if setgroups can be re-enabled");
 
 		fd = SAFE_OPEN(path, O_WRONLY, 0644);
-		TST_EXP_FAIL(write(fd, "allow", 5), EPERM);
+		TST_EXP_FAIL2(write(fd, "allow", 5), EPERM);
 		SAFE_CLOSE(fd);
 
 		sprintf(path, "/proc/%d/setgroups", cpid2);

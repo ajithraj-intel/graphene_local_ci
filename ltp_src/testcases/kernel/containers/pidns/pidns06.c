@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-2.0
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
  * Copyright (C) International Business Machines Corp., 2008
  * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
@@ -29,7 +29,10 @@ static void child_func(int pid)
 
 static void run(void)
 {
-	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
+	const struct tst_clone_args args = {
+		.flags = CLONE_NEWPID,
+		.exit_signal = SIGCHLD,
+	};
 	pid_t pid = getpid();
 
 	if (!SAFE_CLONE(&args)) {

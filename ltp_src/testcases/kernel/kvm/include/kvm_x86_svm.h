@@ -37,10 +37,19 @@
 /* SVM event intercept IDs */
 #define SVM_INTERCEPT_HLT 0x78
 #define SVM_INTERCEPT_VMRUN 0x80
+#define SVM_INTERCEPT_VMLOAD 0x82
+#define SVM_INTERCEPT_VMSAVE 0x83
+#define SVM_INTERCEPT_STGI 0x84
+#define SVM_INTERCEPT_CLGI 0x85
 #define SVM_INTERCEPT_MAX 0x95
 
 /* SVM vmrun exit codes */
 #define SVM_EXIT_HLT 0x78
+#define SVM_EXIT_VMRUN 0x80
+#define SVM_EXIT_VMLOAD 0x82
+#define SVM_EXIT_VMSAVE 0x83
+#define SVM_EXIT_STGI 0x84
+#define SVM_EXIT_CLGI 0x85
 #define SVM_EXIT_AVIC_NOACCEL 0x402
 #define SVM_EXIT_INVALID ((uint64_t)-1)
 
@@ -153,5 +162,11 @@ struct kvm_svm_vcpu *kvm_create_svm_vcpu(int (*guest_main)(void),
 	int alloc_stack);
 
 void kvm_svm_vmrun(struct kvm_svm_vcpu *cpu);
+
+/* Load FS, GS, TR and LDTR state from vmsave_buf */
+void kvm_svm_vmload(struct kvm_vmcb *buf);
+
+/* Save current FS, GS, TR and LDTR state to vmsave_buf */
+void kvm_svm_vmsave(struct kvm_vmcb *buf);
 
 #endif /* KVM_X86_SVM_H_ */

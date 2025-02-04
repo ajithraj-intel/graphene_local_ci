@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-2.0
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
  * Copyright (c) 2022 CTERA Networks.  All Rights Reserved.
  *
@@ -160,9 +160,15 @@ static void test_fanotify(void)
 	}
 
 	/*
-	 * drop_caches should evict inode from cache and remove evictable mark
+	 * drop_caches should evict inode from cache and remove evictable mark.
+	 * We call drop_caches twice as once the dentries will just cycle
+	 * through the LRU without being reclaimed and if there are no other
+	 * objects to reclaim, the slab reclaim will just stop instead of
+	 * retrying. Note that this relies on how reclaim of fs objects work
+	 * for the filesystem but this test is restricted to ext2...
 	 */
 	fsync_file(TEST_FILE);
+	SAFE_FILE_PRINTF(DROP_CACHES_FILE, "3");
 	SAFE_FILE_PRINTF(DROP_CACHES_FILE, "3");
 
 	verify_mark_removed(TEST_FILE, "after drop_caches");
@@ -224,7 +230,7 @@ static void setup(void)
 {
 	SAFE_TOUCH(TEST_FILE, 0666, NULL);
 
-	REQUIRE_MARK_TYPE_SUPPORTED_BY_KERNEL(FAN_MARK_EVICTABLE);
+	REQUIRE_MARK_TYPE_SUPPORTED_ON_FS(FAN_MARK_EVICTABLE, ".");
 	REQUIRE_FANOTIFY_EVENTS_SUPPORTED_ON_FS(FAN_CLASS_NOTIF|FAN_REPORT_FID,
 						FAN_MARK_FILESYSTEM,
 						FAN_ATTRIB, ".");
@@ -250,7 +256,10 @@ static struct tst_test test = {
 	.mount_device = 1,
 	.mntpoint = MOUNT_PATH,
 	/* Shrinkers on other fs do not work reliably enough to guarantee mark eviction on drop_caches */
-	.dev_fs_type = "ext2",
+	.filesystems = (struct tst_fs []){
+		{.type = "ext2"},
+		{}
+	},
 };
 
 #else

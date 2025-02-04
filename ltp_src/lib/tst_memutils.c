@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 /*
  * Copyright (c) 2020 SUSE LLC <mdoucha@suse.cz>
+ * Copyright (c) Linux Test Project, 2021-2023
  */
 
 #include <stdio.h>
@@ -11,6 +12,7 @@
 
 #define TST_NO_DEFAULT_MAIN
 #include "tst_test.h"
+#include "tst_memutils.h"
 #include "tst_capability.h"
 #include "lapi/syscalls.h"
 
@@ -95,6 +97,15 @@ long long tst_available_mem(void)
 	return mem_available;
 }
 
+long long tst_available_swap(void)
+{
+	unsigned long long swap_available = 0;
+
+	FILE_LINES_SCANF("/proc/meminfo", "SwapFree: %llu", &swap_available);
+
+	return swap_available;
+}
+
 static int has_caps(void)
 {
 	struct tst_cap_user_header hdr = {
@@ -104,11 +115,11 @@ static int has_caps(void)
 
 	struct tst_cap_user_data caps[2];
 
-	// if (tst_capget(&hdr, caps))
-	//	tst_brk(TBROK | TERRNO, "tst_capget()");
+	if (tst_capget(&hdr, caps))
+		tst_brk(TBROK | TERRNO, "tst_capget()");
 
-	// if (caps[0].effective & (1U << CAP_SYS_RESOURCE))
-	//	return 1;
+	if (caps[0].effective & (1U << CAP_SYS_RESOURCE))
+		return 1;
 
 	return 0;
 }

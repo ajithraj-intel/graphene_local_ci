@@ -41,13 +41,13 @@
 #include <string.h>
 #include <unistd.h>
 #include "tst_safe_stdio.h"
-#include "lapi/abisize.h"
 #include "mem.h"
 
 /* allow swapping 1 * phy_mem in maximum */
 #define COE_DELTA       1
 /* will try to alloc 1.3 * phy_mem */
 #define COE_SLIGHT_OVER 0.3
+#define MEM_SIZE 1024 * 1024
 
 static void init_meminfo(void);
 static void do_alloc(int allow_raise);
@@ -62,9 +62,6 @@ static unsigned int start_runtime;
 
 static void test_swapping(void)
 {
-#ifdef TST_ABI32
-	tst_brk(TCONF, "test is not designed for 32-bit system.");
-#endif
 	FILE *file;
 	char line[PATH_MAX];
 
@@ -83,7 +80,9 @@ static void test_swapping(void)
 
 	switch (pid = SAFE_FORK()) {
 	case 0:
+		TST_PRINT_MEMINFO();
 		do_alloc(0);
+		TST_PRINT_MEMINFO();
 		do_alloc(1);
 		exit(0);
 	default:
@@ -103,6 +102,13 @@ static void init_meminfo(void)
 				swap_free_init, mem_over_max);
 }
 
+static void memset_blocks(char *ptr, int mem_count, int sleep_time_ms) {
+	for (int i = 0; i < mem_count / 1024; i++) {
+		memset(ptr + (i * MEM_SIZE), 1, MEM_SIZE);
+		usleep(sleep_time_ms * 1000);
+	}
+}
+
 static void do_alloc(int allow_raise)
 {
 	long mem_count;
@@ -111,15 +117,19 @@ static void do_alloc(int allow_raise)
 	if (allow_raise == 1)
 		tst_res(TINFO, "available physical memory: %ld MB",
 				mem_available_init / 1024);
+
 	mem_count = mem_available_init + mem_over;
+
 	if (allow_raise == 1)
 		tst_res(TINFO, "try to allocate: %ld MB", mem_count / 1024);
 	s = SAFE_MALLOC(mem_count * 1024);
-	memset(s, 1, mem_count * 1024);
+	memset_blocks(s, mem_count, 1);
+
 	if ((allow_raise == 1) && (raise(SIGSTOP) == -1)) {
 		tst_res(TINFO, "memory allocated: %ld MB", mem_count / 1024);
 		tst_brk(TBROK | TERRNO, "kill");
 	}
+
 	free(s);
 }
 
@@ -138,6 +148,7 @@ static void check_swapping(void)
 		swap_free_now = SAFE_READ_MEMINFO("SwapFree:");
 		sleep(1);
 		long diff = labs(swap_free_now - SAFE_READ_MEMINFO("SwapFree:"));
+
 		if (diff < 10)
 			break;
 
@@ -146,9 +157,10 @@ static void check_swapping(void)
 
 	swapped = SAFE_READ_PROC_STATUS(pid, "VmSwap:");
 	if (swapped > mem_over_max) {
+		TST_PRINT_MEMINFO();
 		kill(pid, SIGCONT);
-		tst_brk(TFAIL, "heavy swapping detected: "
-				"%ld MB swapped.", swapped / 1024);
+		tst_brk(TFAIL, "heavy swapping detected: %ld MB swapped",
+				swapped / 1024);
 	}
 
 	tst_res(TPASS, "no heavy swapping detected, %ld MB swapped.",
@@ -164,6 +176,7 @@ static struct tst_test test = {
 	.min_mem_avail = 10,
 	.max_runtime = 600,
 	.test_all = test_swapping,
+	.skip_in_compat = 1,
 	.needs_kconfigs = (const char *[]) {
 		"CONFIG_SWAP=y",
 		NULL

@@ -34,7 +34,6 @@ struct test_case {
 	int exp_errno;
 	struct mmsghdr **msg_vec;
 	int bad_ts_addr;
-	int timeout_test;
 };
 
 static struct test_case tcase[] = {
@@ -57,7 +56,6 @@ static struct test_case tcase[] = {
 		.tv_nsec = 0,
 		.exp_errno = EINVAL,
 		.msg_vec = &msg,
-		.timeout_test = 1,
 	},
 	{
 		.desc = "overflow in nanoseconds in timeout",
@@ -66,7 +64,6 @@ static struct test_case tcase[] = {
 		.tv_nsec = 1000000001,
 		.exp_errno = EINVAL,
 		.msg_vec = &msg,
-		.timeout_test = 1,
 	},
 	{
 		.desc = "bad timeout address",
@@ -87,18 +84,13 @@ static void do_test(unsigned int i)
 	tst_ts_set_sec(&ts, tc->tv_sec);
 	tst_ts_set_nsec(&ts, tc->tv_nsec);
 
-	if (tc->bad_ts_addr) {
+	if (tc->bad_ts_addr)
 		timeout = bad_addr;
-		TST_EXP_FAIL2(tv->recvmmsg(*tc->fd, *tc->msg_vec, VLEN, 0, timeout),
-	             tc->exp_errno, "recvmmsg() %s", tc->desc);
-	} else if (tc->timeout_test) {
+	else
 		timeout = tst_ts_get(&ts);
-		TST_EXP_FAIL2(tv->recvmmsg(*tc->fd, *tc->msg_vec, VLEN, 0, timeout),
+
+	TST_EXP_FAIL2(tv->recvmmsg(*tc->fd, *tc->msg_vec, VLEN, 0, timeout),
 	             tc->exp_errno, "recvmmsg() %s", tc->desc);
-	} else {
-		TST_EXP_FAIL2(tv->recvmmsg(*tc->fd, *tc->msg_vec, VLEN, 0, NULL),
-	             tc->exp_errno, "recvmmsg() %s", tc->desc);
-	}
 }
 
 static void setup(void)

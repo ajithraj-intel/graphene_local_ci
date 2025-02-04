@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-2.0
+// SPDX-License-Identifier: GPL-2.0-only
 /*
  * Copyright (C) 2010  Red Hat, Inc.
  */
@@ -32,13 +32,13 @@
 #include "tst_safe_macros.h"
 
 static int fd = -1, file_len = 40960;
-static char *testfile = "test_mlock04";
+static char *testfile = "test_mlock";
 
 static void verify_mlock(void)
 {
 	char *buf;
 
-	buf = SAFE_MMAP(NULL, file_len, PROT_WRITE, MAP_PRIVATE, fd, 0);
+	buf = SAFE_MMAP(NULL, file_len, PROT_WRITE, MAP_SHARED, fd, 0);
 	TST_EXP_PASS(mlock(buf, file_len), "mlock(%p, %d)", buf, file_len);
 	SAFE_MUNLOCK(buf, file_len);
 	SAFE_MUNMAP(buf, file_len);
@@ -57,7 +57,7 @@ static void cleanup(void)
 }
 
 static struct tst_test test = {
-	// .needs_tmpdir = 1,
+	.needs_tmpdir = 1,
 	.setup = setup,
 	.cleanup = cleanup,
 	.test_all = verify_mlock,

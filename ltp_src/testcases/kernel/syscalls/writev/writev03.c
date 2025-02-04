@@ -30,8 +30,8 @@
 #define CHUNK_SIZE 256
 #define BUF_SIZE (2 * CHUNK_SIZE)
 #define MNTPOINT "mntpoint"
-#define TEMPFILE "/tmp/writev03_testfile"
-#define MAPFILE "/tmp/writev03_mapfile"
+#define TEMPFILE MNTPOINT "/test_file"
+#define MAPFILE MNTPOINT "/map_file"
 
 static unsigned char buf[BUF_SIZE], *map_ptr;
 static int mapfd = -1, writefd = -1, readfd = -1;
@@ -139,9 +139,9 @@ static void cleanup(void)
 static struct tst_test test = {
 	.test_all = run,
 	.needs_root = 1,
-	// .mount_device = 1,
-	// .mntpoint = MNTPOINT,
-	// .all_filesystems = 1,
+	.mount_device = 1,
+	.mntpoint = MNTPOINT,
+	.all_filesystems = 1,
 	.min_cpus = 2,
 	.setup = setup,
 	.cleanup = cleanup,

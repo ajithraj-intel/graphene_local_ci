@@ -15,14 +15,14 @@
 #include <stdio.h>
 #include "tst_test.h"
 
-#define MNT_POINT "/tmp"
-#define TEMP_FILE "rename08_tmpfile"
+#define MNT_POINT "mntpoint"
+#define TEMP_FILE "tmpfile"
 #define INVALID_PATH ((void *)-1)
 
 static void setup(void)
 {
 	SAFE_CHDIR(MNT_POINT);
-	SAFE_CREAT(TEMP_FILE, 0700);
+	SAFE_TOUCH(TEMP_FILE, 0700, NULL);
 }
 
 static void run(void)
@@ -37,7 +37,7 @@ static struct tst_test test = {
 	.setup = setup,
 	.test_all = run,
 	.needs_root = 1,
-	// .mount_device = 1,
-	// .mntpoint = MNT_POINT,
-	// .all_filesystems = 1
+	.mount_device = 1,
+	.mntpoint = MNT_POINT,
+	.all_filesystems = 1
 };

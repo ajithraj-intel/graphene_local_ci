@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-2.0
+// SPDX-License-Identifier: GPL-2.0-only
 /*\
  *
  * [Description]
@@ -144,6 +144,7 @@ static void alloc_pagecache_in_child(const struct tst_cg_group *const cg,
 	tst_res(TINFO, "Child %d in %s: Allocating pagecache: %"PRIdPTR,
 		getpid(), tst_cg_group_name(cg), size);
 	alloc_pagecache(fd, size);
+	SAFE_FSYNC(fd);
 
 	TST_CHECKPOINT_WAKE(CHILD_IDLE);
 	TST_CHECKPOINT_WAIT(TEST_DONE);
@@ -239,7 +240,6 @@ static struct tst_test test = {
 	.cleanup = cleanup,
 	.test_all = test_memcg_min,
 	.mount_device = 1,
-	.dev_min_size = 256,
 	.mntpoint = TMPDIR,
 	.all_filesystems = 1,
 	.skip_filesystems = (const char *const[]){

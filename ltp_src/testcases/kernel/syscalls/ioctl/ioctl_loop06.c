@@ -57,8 +57,10 @@ static void verify_ioctl_loop(unsigned int n)
 
 	if (TST_RET == 0) {
 		tst_res(TFAIL, "Set block size succeed unexpectedly");
-		if (tcases[n].ioctl_flag == LOOP_CONFIGURE)
+		if (tcases[n].ioctl_flag == LOOP_CONFIGURE) {
 			tst_detach_device_by_fd(dev_path, dev_fd);
+			dev_fd = SAFE_OPEN(dev_path, O_RDWR);
+		}
 		return;
 	}
 	if (TST_ERR == EINVAL)
@@ -87,6 +89,7 @@ static void run(unsigned int n)
 	}
 	if (attach_flag) {
 		tst_detach_device_by_fd(dev_path, dev_fd);
+		dev_fd = SAFE_OPEN(dev_path, O_RDWR);
 		attach_flag = 0;
 	}
 	loopconfig.block_size = *(tc->setvalue);
@@ -109,8 +112,9 @@ static void setup(void)
 	unalign_value = pg_size - 1;
 
 	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
+	ret = ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, 512);
 
-	if (ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, 512) && errno == EINVAL)
+	if (ret && (errno == EINVAL || errno == ENOTTY))
 		tst_brk(TCONF, "LOOP_SET_BLOCK_SIZE is not supported");
 
 	file_fd = SAFE_OPEN("test.img", O_RDWR);

@@ -109,12 +109,12 @@ static void test_statx(unsigned int test_nr)
 	clock_wait_tick();
 	tc->operation();
 	clock_wait_tick();
-	SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &after_time);
+	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &after_time);
 
-	TEST(statx(AT_FDCWD, TEST_FILE, 0, STATX_ALL, &buff));
+	TEST(statx(AT_FDCWD, TEST_FILE, 0, STATX_BASIC_STATS | STATX_BTIME, &buff));
 	if (TST_RET != 0) {
 		tst_brk(TFAIL | TTERRNO,
-			"statx(AT_FDCWD, %s, 0, STATX_ALL, &buff)",
+			"statx(AT_FDCWD, %s, 0, STATX_BASIC_STATS | STATX_BTIME, &buff)",
 			TEST_FILE);
 	}
 
@@ -155,7 +155,12 @@ static struct tst_test test = {
 	.needs_root = 1,
 	.mntpoint = MOUNT_POINT,
 	.mount_device = 1,
-	.dev_fs_type = "ext4",
-	.dev_fs_opts = (const char *const []){"-I", "256", NULL},
-	.mnt_flags = MS_STRICTATIME,
+	.filesystems = (struct tst_fs[]) {
+		{
+			.type = "ext4",
+			.mkfs_opts = (const char *const []){"-I", "256", NULL},
+			.mnt_flags = MS_STRICTATIME,
+		},
+		{}
+	},
 };

@@ -128,6 +128,8 @@ static int allocate_offline(int tnum)
 				return -1;
 
 			if (madvise(ptrs[num_alloc], pagesize, MADV_SOFT_OFFLINE) == -1) {
+				if (errno == EBUSY)
+					continue;
 				if (errno != EINVAL)
 					tst_res(TFAIL | TERRNO, "madvise failed");
 				if (errno == EINVAL)
@@ -307,9 +309,9 @@ static int open_unpoison_pfn(void)
 		SAFE_CMD(cmd_modprobe, NULL, NULL);
 
 	/* debugfs mount point */
-	mntf = setmntent("/etc/mtab", "r");
+	mntf = setmntent("/proc/mounts", "r");
 	if (!mntf) {
-		tst_brk(TBROK | TERRNO, "Can't open /etc/mtab");
+		tst_brk(TBROK | TERRNO, "Can't open /proc/mounts");
 		return -1;
 	}
 	while ((mnt = getmntent(mntf)) != NULL) {
@@ -323,7 +325,22 @@ static int open_unpoison_pfn(void)
 	if (!mnt)
 		return -1;
 
-	return SAFE_OPEN(debugfs_fp, O_WRONLY);
+	TEST(open(debugfs_fp, O_WRONLY));
+
+	if (TST_RET == -1 && TST_ERR == EPERM && tst_lockdown_enabled() > 0) {
+		tst_res(TINFO,
+			"Cannot restore soft-offlined memory due to lockdown");
+		return TST_RET;
+	}
+
+	if (TST_RET == -1) {
+		tst_brk(TBROK | TTERRNO, "open(%s) failed", debugfs_fp);
+	} else if (TST_RET < 0) {
+		tst_brk(TBROK | TTERRNO, "Invalid open() return value %ld",
+			TST_RET);
+	}
+
+	return TST_RET;
 }
 
 /*
@@ -409,6 +426,10 @@ static struct tst_test test = {
 	.needs_cmds = (const char *[]) {
 		"modprobe",
 		"rmmod",
+		NULL
+	},
+	.needs_kconfigs = (const char *[]) {
+		"CONFIG_MEMORY_FAILURE=y",
 		NULL
 	},
 	.max_runtime = 30,

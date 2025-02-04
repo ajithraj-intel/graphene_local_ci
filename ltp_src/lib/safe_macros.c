@@ -898,13 +898,25 @@ int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
 	       const void *data)
 {
 	int rval = -1;
+	char mpath[PATH_MAX];
 
+	if (realpath(target, mpath)) {
+		tst_resm_(file, lineno, TINFO,
+			"Mounting %s to %s fstyp=%s flags=%lx",
+			source, mpath, filesystemtype, mountflags);
+	} else {
+		tst_resm_(file, lineno, TINFO | TERRNO,
+			"Cannot resolve the absolute path of %s", target);
+	}
 	/*
 	 * Don't try using the kernel's NTFS driver when mounting NTFS, since
 	 * the kernel's NTFS driver doesn't have proper write support.
 	 */
 	if (!filesystemtype || strcmp(filesystemtype, "ntfs")) {
+		mode_t old_umask = umask(0);
+
 		rval = mount(source, target, filesystemtype, mountflags, data);
+		umask(old_umask);
 		if (!rval)
 			return 0;
 	}
@@ -948,6 +960,14 @@ int safe_umount(const char *file, const int lineno, void (*cleanup_fn)(void),
 		const char *target)
 {
 	int rval;
+	char mpath[PATH_MAX];
+
+	if (realpath(target, mpath)) {
+		tst_resm_(file, lineno, TINFO, "Umounting %s", mpath);
+	} else {
+		tst_resm_(file, lineno, TINFO | TERRNO,
+			"Cannot resolve the absolute path of %s", target);
+	}
 
 	rval = tst_umount(target);
 

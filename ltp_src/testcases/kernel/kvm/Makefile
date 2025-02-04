@@ -8,8 +8,8 @@ include $(top_srcdir)/include/mk/testcases.mk
 ASFLAGS =
 CPPFLAGS += -I$(abs_srcdir)/include
 GUEST_CPPFLAGS = $(CPPFLAGS) -DCOMPILE_PAYLOAD
-GUEST_CFLAGS = -ffreestanding -O2 -Wall -fno-asynchronous-unwind-tables -mno-mmx -mno-sse
-GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none -fno-stack-protector -z noexecstack
+GUEST_CFLAGS = -ffreestanding -O2 -Wall -fno-asynchronous-unwind-tables -fno-stack-protector -mno-mmx -mno-sse
+GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none -z noexecstack
 GUEST_LDLIBS =
 KVM_LD ?= $(LD)
 
@@ -24,6 +24,10 @@ endif
 ifeq ($(HOST_CPU),x86)
 	GUEST_CFLAGS += -m32
 	ASFLAGS += --32
+
+	ifdef LTP_CFLAGS_FFIXED_EBP
+		GUEST_CFLAGS += -ffixed-ebp
+	endif
 endif
 
 # Some distros enable -pie by default. That breaks KVM payload linking.
@@ -47,6 +51,9 @@ endif
 
 lib_guest.o $(ARCH_OBJ): CPPFLAGS	:= $(GUEST_CPPFLAGS)
 lib_guest.o $(ARCH_OBJ): CFLAGS		:= $(GUEST_CFLAGS)
+
+kvm_svm03: CFLAGS += -pthread
+kvm_svm03: LDLIBS += -pthread
 
 include $(top_srcdir)/include/mk/generic_leaf_target.mk
 

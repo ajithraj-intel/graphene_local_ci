@@ -29,22 +29,26 @@ static void run(void)
 	 * rebound.
 	 */
 	TST_EXP_FAIL(bind(sock1, (struct sockaddr *)&sun2, sizeof(sun2)),
-	             EINVAL, "re-bind() socket");
+		     EINVAL, "re-bind() socket");
 
 	/*
 	 * Since a socket is already bound to the pathname, it can't be bound
 	 * to a second socket. Expected error is EADDRINUSE.
 	 */
 	TST_EXP_FAIL(bind(sock2, (struct sockaddr *)&sun1, sizeof(sun1)),
-	             EADDRINUSE, "bind() with bound pathname");
+		     EADDRINUSE, "bind() with bound pathname");
 
 	/*
 	 * Kernel is buggy since it creates the node in fileystem first, then
 	 * locks the socket and does all the checks and the node is not removed
 	 * in the error path. For now we will unlink the node here so that the
 	 * test works fine when the run() function is executed in a loop.
+	 * From v5.14-rc1 the kernel has fix above issue.
 	 */
-	unlink(SNAME_B);
+	if (tst_kvercmp(5, 14, 0) >= 0)
+		TST_EXP_FAIL(unlink(SNAME_B), ENOENT, "check exist of SNAME_B");
+	else
+		unlink(SNAME_B);
 }
 
 static void setup(void)
@@ -70,8 +74,11 @@ static void setup(void)
 
 static void cleanup(void)
 {
-	SAFE_CLOSE(sock1);
-	SAFE_CLOSE(sock2);
+	if (sock1 > 0)
+		SAFE_CLOSE(sock1);
+
+	if (sock2 > 0)
+		SAFE_CLOSE(sock2);
 }
 
 static struct tst_test test = {

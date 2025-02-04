@@ -29,7 +29,6 @@
  *      7372e79c9eb9 fanotify: fix logic of reporting name info with watched parent
  *
  * Test cases #6-#7 are regression tests for commit:
- * (from v5.19, unlikely to be backported thus not in .tags):
  *
  *      e730558adffb fanotify: consistent behavior for parent not watching children
  */
@@ -380,9 +379,9 @@ static void test_fanotify(unsigned int n)
 		return;
 	}
 
-	if (tc->ignore && tst_kvercmp(5, 19, 0) < 0) {
+	if (tc->ignore && tst_kvercmp(5, 10, 0) < 0) {
 		tst_res(TCONF, "ignored mask on parent dir has undefined "
-				"behavior on kernel < 5.19");
+				"behavior on kernel < 5.10");
 		return;
 	}
 
@@ -480,9 +479,11 @@ static void test_fanotify(unsigned int n)
 
 static void setup(void)
 {
-	fan_report_dfid_unsupported = fanotify_init_flags_supported_on_fs(FAN_REPORT_DFID_NAME,
-									  MOUNT_PATH);
-	ignore_mark_unsupported = fanotify_mark_supported_by_kernel(FAN_MARK_IGNORE_SURV);
+	fan_report_dfid_unsupported = fanotify_flags_supported_on_fs(FAN_REPORT_DFID_NAME,
+								     FAN_MARK_MOUNT,
+								     FAN_OPEN, MOUNT_PATH);
+	ignore_mark_unsupported = fanotify_mark_supported_on_fs(FAN_MARK_IGNORE_SURV,
+								MOUNT_PATH);
 
 	SAFE_MKDIR(MOUNT_NAME, 0755);
 	SAFE_MOUNT(MOUNT_PATH, MOUNT_NAME, "none", MS_BIND, NULL);
@@ -518,6 +519,7 @@ static struct tst_test test = {
 		{"linux-git", "b469e7e47c8a"},
 		{"linux-git", "55bf882c7f13"},
 		{"linux-git", "7372e79c9eb9"},
+		{"linux-git", "e730558adffb"},
 		{}
 	}
 };

@@ -47,7 +47,7 @@ static void setup(void)
 	if (tst_fill_file(TESTFILE, 'a', FILE_SIZE, 1))
 		tst_brk(TBROK, "Could not fill test file");
 
-	// SAFE_LINK(TESTFILE, LINK_TESTFILE);
+	SAFE_LINK(TESTFILE, LINK_TESTFILE);
 }
 
 static void cleanup(void)

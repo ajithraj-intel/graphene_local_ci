@@ -50,7 +50,7 @@ static void setup(void)
 {
 	size_t n;
 
-	SAFE_CREAT("file", 0777);
+	SAFE_TOUCH("file", 0777, NULL);
 
 	memset(longpathname, 'a', PATH_MAX + 2);
 

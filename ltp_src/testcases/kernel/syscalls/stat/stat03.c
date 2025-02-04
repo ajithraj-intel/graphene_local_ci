@@ -57,7 +57,7 @@ static void setup(void)
 	SAFE_SETUID(ltpuser->pw_uid);
 
 	SAFE_MKDIR(TST_EACCES_DIR, DIR_MODE);
-	SAFE_CREAT(TST_EACCES_FILE, DIR_MODE);
+	SAFE_TOUCH(TST_EACCES_FILE, DIR_MODE, NULL);
 	SAFE_CHMOD(TST_EACCES_DIR, MODE_RW);
 
 	for (i = 0; i < ARRAY_SIZE(TC); i++) {
@@ -65,10 +65,10 @@ static void setup(void)
 			TC[i].pathname = tst_get_bad_addr(NULL);
 	}
 
-	SAFE_CREAT(TST_ENOTDIR_FILE, DIR_MODE);
+	SAFE_TOUCH(TST_ENOTDIR_FILE, DIR_MODE, NULL);
 
 	SAFE_MKDIR("test_eloop", DIR_MODE);
-	// SAFE_SYMLINK("../test_eloop", "test_eloop/test_eloop");
+	SAFE_SYMLINK("../test_eloop", "test_eloop/test_eloop");
 	for (i = 0; i < 43; i++)
 		strcat(loop_dir, "/test_eloop");
 }
