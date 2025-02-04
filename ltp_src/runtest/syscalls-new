@@ -322,8 +322,6 @@ fcntl26 fcntl26
 fcntl26_64 fcntl26_64
 fcntl27 fcntl27
 fcntl27_64 fcntl27_64
-fcntl28 fcntl28
-fcntl28_64 fcntl28_64
 fcntl29 fcntl29
 fcntl29_64 fcntl29_64
 fcntl30 fcntl30
@@ -371,16 +369,13 @@ flock06 flock06
 fmtmsg01 fmtmsg01
 
 fork01 fork01
-fork02 fork02
 fork03 fork03
 fork04 fork04
 fork05 fork05
-fork06 fork06
 fork07 fork07
 fork08 fork08
 fork09 fork09
 fork10 fork10
-fork11 fork11
 fork13 fork13
 fork14 fork14
 
@@ -433,6 +428,7 @@ futimesat01 futimesat01
 getcontext01 getcontext01
 
 getcpu01 getcpu01
+getcpu02 getcpu02
 
 getcwd01 getcwd01
 getcwd02 getcwd02
@@ -446,8 +442,6 @@ getdents02 getdents02
 #getdents02_64 getdents02 -l
 
 getdomainname01 getdomainname01
-
-getdtablesize01 getdtablesize01
 
 getegid01 getegid01
 getegid01_16 getegid01_16
@@ -474,6 +468,7 @@ gethostbyname_r01 gethostbyname_r01
 gethostid01 gethostid01
 
 gethostname01 gethostname01
+gethostname02 gethostname02
 
 getitimer01 getitimer01
 getitimer02 getitimer02
@@ -501,6 +496,7 @@ getrandom01 getrandom01
 getrandom02 getrandom02
 getrandom03 getrandom03
 getrandom04 getrandom04
+getrandom05 getrandom05
 
 getresgid01 getresgid01
 getresgid01_16 getresgid01_16
@@ -538,6 +534,7 @@ getsockopt01 getsockopt01
 getsockopt02 getsockopt02
 
 gettid01 gettid01
+gettid02 gettid02
 
 gettimeofday01 gettimeofday01
 gettimeofday02 gettimeofday02
@@ -553,19 +550,27 @@ getxattr03 getxattr03
 getxattr04 getxattr04
 getxattr05 getxattr05
 
+# Todo: IOCTL Build issue needs to be resolved and added
 #Needs tty device.
 #ioctl01 ioctl01 -D /dev/tty0
 #ioctl02 ioctl02 -D /dev/tty0
 
 # Introducing ioctl tests for all /dev/tty* devices
-ioctl01_02   test_ioctl
-ioctl03      ioctl03
-ioctl04      ioctl04
-ioctl05      ioctl05
-ioctl06      ioctl06
-ioctl07      ioctl07
-ioctl08      ioctl08
-ioctl09      ioctl09
+# ioctl_ficlone01 ioctl_ficlone01
+# ioctl_ficlone02 ioctl_ficlone02
+# ioctl_ficlone03 ioctl_ficlone03
+# ioctl_ficlone04 ioctl_ficlone04
+# ioctl_ficlonerange01 ioctl_ficlonerange01
+# ioctl_ficlonerange02 ioctl_ficlonerange02
+
+# ioctl01_02   test_ioctl
+# ioctl03      ioctl03
+# ioctl04      ioctl04
+# ioctl05      ioctl05
+# ioctl06      ioctl06
+# ioctl07      ioctl07
+# ioctl08      ioctl08
+# ioctl09      ioctl09
 
 ioctl_loop01 ioctl_loop01
 ioctl_loop02 ioctl_loop02
@@ -680,6 +685,14 @@ kill11 kill11
 kill12 kill12
 kill13 kill13
 
+landlock01 landlock01
+landlock02 landlock02
+landlock03 landlock03
+landlock04 landlock04
+landlock05 landlock05
+landlock06 landlock06
+landlock07 landlock07
+
 lchown01 lchown01
 lchown01_16 lchown01_16
 lchown02  lchown02
@@ -692,7 +705,6 @@ lgetxattr02 lgetxattr02
 
 link01 symlink01 -T link01
 link02 link02
-link03 link03
 link04 link04
 link05 link05
 link06 link06
@@ -730,6 +742,7 @@ lstat01 lstat01
 lstat01_64 lstat01_64
 lstat02 lstat02
 lstat02_64 lstat02_64
+lstat03 lstat03
 
 mallinfo02 mallinfo02
 mallinfo2_01 mallinfo2_01
@@ -782,6 +795,7 @@ mlock01 mlock01
 mlock02 mlock02
 mlock03 mlock03 -i 20
 mlock04 mlock04
+mlock05 mlock05
 
 mlock201 mlock201
 mlock202 mlock202
@@ -794,7 +808,6 @@ mmap03 mmap03
 mmap04 mmap04
 mmap05 mmap05
 mmap06 mmap06
-mmap07 mmap07
 mmap08 mmap08
 mmap09 mmap09
 mmap12 mmap12
@@ -859,6 +872,7 @@ mremap02 mremap02
 mremap03 mremap03
 mremap04 mremap04
 mremap05 mremap05
+mremap06 mremap06
 
 msgctl01 msgctl01
 msgctl02 msgctl02
@@ -866,10 +880,9 @@ msgctl03 msgctl03
 msgctl04 msgctl04
 msgctl05 msgctl05
 msgctl06 msgctl06
+
 msgstress01 msgstress01
-msgstress02 msgstress02
-msgstress03 msgstress03
-msgstress04 msgstress04
+
 msgctl12 msgctl12
 
 msgget01 msgget01
@@ -905,6 +918,9 @@ munmap01 munmap01
 munmap02 munmap02
 munmap03 munmap03
 
+mseal01 mseal01
+mseal02 mseal02
+
 name_to_handle_at01 name_to_handle_at01
 name_to_handle_at02 name_to_handle_at02
 
@@ -936,6 +952,7 @@ open11 open11
 open12 open12
 open13 open13
 open14 open14
+open15 open15
 
 #openat test cases
 openat01 openat01
@@ -972,6 +989,7 @@ madvise11 madvise11
 newuname01 newuname01
 
 pathconf01 pathconf01
+pathconf02 pathconf02
 
 pause01 pause01
 pause02 pause02
@@ -1005,6 +1023,8 @@ pipe10 pipe10
 pipe11 pipe11
 pipe12 pipe12
 pipe13 pipe13
+pipe14 pipe14
+pipe15 pipe15
 
 pipe2_01 pipe2_01
 pipe2_02 pipe2_02
@@ -1020,7 +1040,6 @@ ppoll01 ppoll01
 prctl01 prctl01
 prctl02 prctl02
 prctl03 prctl03
-prctl04 prctl04
 prctl05 prctl05
 prctl06 prctl06
 prctl07 prctl07
@@ -1032,8 +1051,6 @@ pread01 pread01
 pread01_64 pread01_64
 pread02 pread02
 pread02_64 pread02_64
-pread03 pread03
-pread03_64 pread03_64
 
 preadv01 preadv01
 preadv01_64 preadv01_64
@@ -1056,6 +1073,8 @@ process_vm_readv02 process_vm_readv02
 process_vm_readv03 process_vm_readv03
 process_vm_writev01 process_vm01 -w
 process_vm_writev02 process_vm_writev02
+
+process_madvise01 process_madvise01
 
 prot_hsymlinks prot_hsymlinks
 dirtyc0w dirtyc0w
@@ -1160,7 +1179,6 @@ removexattr02 removexattr02
 
 rename01 rename01
 rename01A symlink01 -T rename01
-rename02 rename02
 rename03 rename03
 rename04 rename04
 rename05 rename05
@@ -1173,6 +1191,9 @@ rename11 rename11
 rename12 rename12
 rename13 rename13
 rename14 rename14
+rename15 rename15
+
+
 
 #renameat test cases
 renameat01 renameat01
@@ -1185,6 +1206,7 @@ request_key02 request_key02
 request_key03 request_key03
 request_key04 request_key04
 request_key05 request_key05
+request_key06 request_key06
 
 rmdir01 rmdir01
 rmdir02 rmdir02
@@ -1231,11 +1253,14 @@ sched_getscheduler02 sched_getscheduler02
 sched_setscheduler01 sched_setscheduler01
 sched_setscheduler02 sched_setscheduler02
 sched_setscheduler03 sched_setscheduler03
+sched_setscheduler04 sched_setscheduler04
 
 sched_yield01 sched_yield01
 
 sched_setaffinity01 sched_setaffinity01
 sched_getaffinity01 sched_getaffinity01
+
+seccomp01 seccomp01
 
 sched_setattr01 sched_setattr01
 sched_getattr01 sched_getattr01
@@ -1356,7 +1381,6 @@ sethostname03 sethostname03
 
 setitimer01 setitimer01
 setitimer02 setitimer02
-setitimer03 setitimer03
 
 setns01 setns01
 setns02 setns02
@@ -1433,6 +1457,7 @@ setsockopt06 setsockopt06
 setsockopt07 setsockopt07
 setsockopt08 setsockopt08
 setsockopt09 setsockopt09
+setsockopt10 setsockopt10
 
 settimeofday01 settimeofday01
 settimeofday02 settimeofday02
@@ -1451,6 +1476,7 @@ setxattr03 setxattr03
 shmat01 shmat01
 shmat02 shmat02
 shmat03 shmat03
+shmat04 shmat04
 
 shmctl01 shmctl01
 shmctl02 shmctl02
@@ -1471,6 +1497,9 @@ shmget04 shmget04
 shmget05 shmget05
 shmget06 shmget06
 
+shutdown01 shutdown01
+shutdown02 shutdown02
+
 sigaction01 sigaction01
 sigaction02 sigaction02
 
@@ -1488,6 +1517,7 @@ signal05 signal05
 signal06 signal06
 
 signalfd01 signalfd01
+signalfd02 signalfd02
 
 signalfd4_01 signalfd4_01
 signalfd4_02 signalfd4_02
@@ -1499,6 +1529,7 @@ sigprocmask01 sigprocmask01
 sigrelse01 sigrelse01
 
 sigsuspend01 sigsuspend01
+sigsuspend02 sigsuspend02
 
 sigtimedwait01 sigtimedwait01
 
@@ -1522,6 +1553,10 @@ splice02 seq 1 20000 | splice02
 splice03 splice03
 splice04 splice04
 splice05 splice05
+splice06 splice06
+splice07 splice07
+splice08 splice08
+splice09 splice09
 
 tee01 tee01
 tee02 tee02
@@ -1566,7 +1601,6 @@ symlink01 symlink01
 symlink02 symlink02
 symlink03 symlink03
 symlink04 symlink04
-symlink05 symlink05
 
 #symlinkat test cases
 symlinkat01 symlinkat01
@@ -1627,7 +1661,6 @@ times03 times03
 
 timerfd01 timerfd01
 timerfd02 timerfd02
-timerfd03 timerfd03
 timerfd04 timerfd04
 timerfd_create01 timerfd_create01
 timerfd_gettime01 timerfd_gettime01
@@ -1675,6 +1708,8 @@ unlink01 symlink01 -T unlink01
 unlink05 unlink05
 unlink07 unlink07
 unlink08 unlink08
+unlink09 unlink09
+unlink10 unlink10
 
 #unlinkat test cases
 unlinkat01 unlinkat01
@@ -1707,6 +1742,7 @@ utime03 utime03
 utime04 utime04
 utime05 utime05
 utime06 utime06
+utime07 utime07
 
 utimes01 utimes01
 
@@ -1733,10 +1769,8 @@ wait402 wait402
 wait403 wait403
 
 waitpid01 waitpid01
-waitpid02 waitpid02
 waitpid03 waitpid03
 waitpid04 waitpid04
-waitpid05 waitpid05
 waitpid06 waitpid06
 waitpid07 waitpid07
 waitpid08 waitpid08
@@ -1810,6 +1844,9 @@ statx06 statx06
 statx07 statx07
 statx08 statx08
 statx09 statx09
+statx10 statx10     
+statx11 statx11
+statx12 statx12
 
 membarrier01 membarrier01
 
