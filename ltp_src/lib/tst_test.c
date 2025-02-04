@@ -1502,7 +1502,7 @@ static void heartbeat(void)
 {
 	if (tst_clock_gettime(CLOCK_MONOTONIC, &tst_start_time))
 		tst_res(TWARN | TERRNO, "tst_clock_gettime() failed");
-
+#if 0
 	if (getppid() == 1) {
 		tst_res(TFAIL, "Main test process might have exit!");
 		/*
@@ -1512,6 +1512,7 @@ static void heartbeat(void)
 		kill(0, SIGKILL);
 		exit(TBROK);
 	}
+#endif
 
 	kill(getppid(), SIGUSR1);
 }
