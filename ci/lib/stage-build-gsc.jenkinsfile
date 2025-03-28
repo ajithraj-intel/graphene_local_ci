@@ -130,8 +130,8 @@ stage('Build and Test Workloads') {
         finally {
             sh '''
                 # Remove containers with Error Handling - Avoid error in finally block
-                if [ -n "$(docker ps -q)" ]; then
-                    docker rm $(docker stop $(docker ps -q) &>/dev/null) &>/dev/null
+                if [ -n "$(docker ps -aq)" ]; then
+                    docker rm $(docker stop $(docker ps -aq) &>/dev/null) &>/dev/null
                 fi
 
                 # Remove images with Error Handling - Avoid error in finally block
@@ -166,8 +166,8 @@ stage('Build and Test Workloads') {
         finally {
             sh '''
                 # Remove containers with Error Handling - Avoid error in finally block
-                if [ -n "$(docker ps -q)" ]; then
-                    docker rm $(docker stop $(docker ps -q) &>/dev/null) &>/dev/null
+                if [ -n "$(docker ps -aq)" ]; then
+                    docker rm $(docker stop $(docker ps -aq) &>/dev/null) &>/dev/null
                 fi
 
                 # Remove images with Error Handling - Avoid error in finally block
@@ -202,8 +202,8 @@ stage('Build and Test Workloads') {
         finally {
             sh '''
                 # Remove containers with Error Handling - Avoid error in finally block
-                if [ -n "$(docker ps -q)" ]; then
-                    docker rm $(docker stop $(docker ps -q) &>/dev/null) &>/dev/null
+                if [ -n "$(docker ps -aq)" ]; then
+                    docker rm $(docker stop $(docker ps -aq) &>/dev/null) &>/dev/null
                 fi
 
                 # Remove images with Error Handling - Avoid error in finally block
